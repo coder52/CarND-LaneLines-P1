@@ -11,7 +11,10 @@ The goals / steps of this project are the following:
 [//]: # (Image References)
 
 [image1]: ./examples/grayscale.jpg "Grayscale"
-[image2]: ./test_images_output/solidYellowLeft.jpg "Grayscale"
+
+[//]:
+
+[image2]: ./test_images_output/solidYellowLeft.jpg
 
 ---
 
