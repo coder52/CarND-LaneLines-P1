@@ -10,47 +10,48 @@ When we drive, we use our eyes to decide where to go.  The lines on the road tha
 
 In this project you will detect lane lines in images using Python and OpenCV.  OpenCV means "Open-Source Computer Vision", which is a package that has many useful tools for analyzing images.  
 
-To complete the project, two files will be submitted: a file containing project code and a file containing a brief write up explaining your solution. We have included template files to be used both for the [code](https://github.com/udacity/CarND-LaneLines-P1/blob/master/P1.ipynb) and the [writeup](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md).The code file is called P1.ipynb and the writeup template is writeup_template.md 
+**Finding Lane Lines on the Road**
 
-To meet specifications in the project, take a look at the requirements in the [project rubric](https://review.udacity.com/#!/rubrics/322/view)
-
-
-Creating a Great Writeup
----
-For this project, a great writeup should provide a detailed response to the "Reflection" section of the [project rubric](https://review.udacity.com/#!/rubrics/322/view). There are three parts to the reflection:
-
-1. Describe the pipeline
-
-2. Identify any shortcomings
-
-3. Suggest possible improvements
-
-We encourage using images in your writeup to demonstrate how your pipeline works.  
-
-All that said, please be concise!  We're not looking for you to write a book here: just a brief description.
-
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup. Here is a link to a [writeup template file](https://github.com/udacity/CarND-LaneLines-P1/blob/master/writeup_template.md). 
+The goals / steps of this project are the following:
+* Make a pipeline that finds lane lines on the road
+* Reflect on your work in a written report
 
 
-The Project
+[//]: # (Image References)
+
+[image1]: ./test_images_output/solidYellowLeft.jpg
+
 ---
 
-## If you have already installed the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) you should be good to go!   If not, you should install the starter kit to get started on this project. ##
 
-**Step 1:** Set up the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) if you haven't already.
+### Reflection
 
-**Step 2:** Open the code in a Jupyter Notebook
+### 1. Describe your pipeline. As part of the description, explain how you modified the draw_lines() function.
 
-You will complete the project code in a Jupyter notebook.  If you are unfamiliar with Jupyter Notebooks, check out [Udacity's free course on Anaconda and Jupyter Notebooks](https://classroom.udacity.com/courses/ud1111) to get started.
+My pipeline consisted of 6 steps. First, I converted the images to grayscale, then I applied Gaussian smoothing, after that I found edges in blurred image by Cany Edge Detection, later I masked the edged image with a four-sided polygon, and then I used the function extrapolate() for to connect/average/extrapolate line segments instead of draw_lines() and hough_lines(), last I drew the extrapolate lines on the frame.
 
-Jupyter is an Ipython notebook where you can run blocks of code and see results interactively.  All the code for this project is contained in a Jupyter notebook. To start Jupyter in your browser, use terminal to navigate to your project directory and then run the following command at the terminal prompt (be sure you've activated your Python 3 carnd-term1 environment as described in the [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) installation instructions!):
+In order to draw a single line on the left and right lanes, I implemented the extrapolate() function. In this function, I used global variables for storing distances between them and coordinates of the left and right lines. I take stored last some values of these parameters. I used the cv2.HoughLines() function for taking rho and theta values of Hough coordinates of the lines. HoughLines() function is returning NoneType value, when sun lights enter to the camera directly or if there are no lines in an edged image. Then I made a filter for avoiding noises and NoneType error for HoughLines() function. I used 0.95 and 2.11 values of Theta for avoiding noises that other unuseful lines made. I found these values from some test photos for right and left lane lines. We can find the x coordinates of lines by using the Hough coordinates with;
+                x=(rho-y*sin(theta))/cos(theta)
+Next part I implemented some codes for the summing x coordinates of lines when lines are visible and also for extrapolating the invisible line parts. Later I assign x coordinates of the lines by using to last values of coordinates and draw the lines on a black canvas.
 
-`> jupyter notebook`
+If you'd like to include images to show how the pipeline works, here is how to include an image: 
 
-A browser window will appear showing the contents of the current directory.  Click on the file called "P1.ipynb".  Another browser window will appear displaying the notebook.  Follow the instructions in the notebook to complete the project.  
+![alt text][image1]
 
-**Step 3:** Complete the project and submit both the Ipython notebook and the project writeup
 
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
+### 2. Identify potential shortcomings with your current pipeline
+
+
+One potential shortcoming would be what would happen when there is no line on the road.
+
+Another shortcoming could be temporary lines during road repair and temporary and very close permanent lines can be found in the masked area at the same time.
+
+The curvature of the bend can be very small.
+
+
+### 3. Suggest possible improvements to your pipeline
+
+A possible improvement would be on extraplate() function. For example, it can divide into small specific functions.
+
+Another potential improvement could be to figure of lines. We can draw curved lines on curved roads.
 
